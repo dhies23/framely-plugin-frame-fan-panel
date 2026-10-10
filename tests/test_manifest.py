@@ -80,6 +80,20 @@ else:
     check('/home/steamos' not in unit, 'the shipped unit contains no hardcoded home')
     check('ExecStopPost=/usr/bin/systemctl start deckard-fan-control.service' in unit,
           'the unit hands the fan back when it stops')
+    # Everything except the two files build.mjs rewrites is copied byte for byte
+    # from the vendored panel.
+    rewritten = {'README.md', 'sf-fan-qamd.service'}
+    for name, digest in vendor_meta['files'].items():
+        if name == 'device/sf-fan-qamd.service':
+            continue
+        packed_name = pathlib.PurePosixPath(name).name
+        if packed_name in rewritten:
+            continue
+        check(hashlib.sha256((ROOT / 'payload' / packed_name).read_bytes()).hexdigest() == digest,
+              'payload matches the vendored panel: ' + packed_name)
+    check((ROOT / 'payload/README.md').read_text(encoding='utf-8')
+          != (vendor / 'README.md').read_text(encoding='utf-8'),
+          'the packaged README points at the Framely plugin page')
     backend = (ROOT / 'payload/backend.py').read_text(encoding='utf-8')
     check('deckard-fan-control.service' in backend, 'the backend knows the stock controller')
     check('sf-fan-qamd.service' in backend, 'the backend knows its own service')
@@ -101,6 +115,8 @@ else:
         for name, digest in packed['files'].items():
             check(hashlib.sha256(archive.read(name)).hexdigest() == digest, 'payload hash: ' + name)
     check(packed['version'] == manifest['version'], 'package version matches the repository')
+    check(list(packed['files']) == sorted(packed['files']),
+          'manifest.files is written in sorted order (deterministic packaging)')
     check('downloadUrl' in packed, 'package carries the release downloadUrl')
     check('downloadSha256' not in packed, 'package drops the registration-only downloadSha256')
     check(packed['downloadUrl'].endswith(

@@ -44,7 +44,10 @@ def pack(root=ROOT, repository=None):
     for path in paths:
         if not stat.S_ISREG(path.lstat().st_mode):
             raise ValueError('Payload must contain only regular files: ' + path.name)
-    files = {p.name: p.read_bytes() for p in sorted(paths)}
+    # Sort by name, not by Path: path ordering is case-insensitive on Windows and
+    # case-sensitive elsewhere, which would make the packaged bytes machine
+    # dependent even though the contents are identical.
+    files = {p.name: p.read_bytes() for p in sorted(paths, key=lambda entry: entry.name)}
     manifest['files'] = {name: hashlib.sha256(data).hexdigest() for name, data in files.items()}
     output = root / 'dist' / f"{manifest['id']}-{manifest['version']}.framely"
     output.parent.mkdir(exist_ok=True)
