@@ -1,0 +1,19 @@
+# 构建产物
+payload/
+dist/
+node_modules/
+release-notes.md
+.preview/
+
+# Python
+__pycache__/
+*.pyc
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+*.swp
+*~
+Thumbs.db
+Desktop.ini
+.DS_Store

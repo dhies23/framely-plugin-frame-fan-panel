@@ -1,0 +1,24 @@
+{
+  "name": "framely-plugin-frame-fan-panel",
+  "version": "1.0.0-preview.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "python tests/test_manifest.py",
+    "preview": "node scripts/preview.mjs",
+    "dev": "node scripts/preview.mjs"
+  },
+  "dependencies": {
+    "@framely/sdk": "file:vendor/framely-sdk",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.0",
+    "@types/react-dom": "19.2.0",
+    "esbuild": "0.25.10",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "apiVersion": 1,
+  "id": "dhies23.frame-fan-panel",
+  "name": "Frame 风扇面板",
+  "version": "1.0.0-preview.1",
+  "author": "dhies23",
+  "homepage": "https://github.com/dhies23/framely-plugin-frame-fan-panel",
+  "description": "在 Framely 里安装、启用、停用和卸载 Steam Frame QAM 风扇面板，并实时显示温度、转速与手动/自动状态。",
+  "details": "插件只负责管理，不重复实现风扇逻辑：它把 dhies23/steam-frame-fan-panel 的守护进程与注入脚本装到 /home/<steam 用户>/sf-fan-qam，写入 sf-fan-qamd.service，并回报是否已安装、是否开机自启、是否正在运行。风扇调速界面仍然是 SteamVR 快捷菜单里的电池图标 →「风扇」标签页。后端以 root 身份运行，因为守护进程要写 hwmon 的 pwm1 并接管 deckard-fan-control.service；任何一步失败都会把风扇交回系统温控，不会让设备失去散热控制。",
+  "tags": [
+    "风扇",
+    "温度",
+    "系统"
+  ],
+  "changelog": "首次发布：安装 / 启用 / 停用 / 卸载 QAM 风扇面板，并显示实时转速、PWM、模式与温度。",
+  "icon": "icon.png",
+  "backend": {
+    "entry": "backend.py",
+    "runAs": "root",
+    "autostart": true,
+    "restart": "on-failure",
+    "restartLimit": 3
+  },
+  "lifecycle": {
+    "runAs": "root",
+    "onInstall": {
+      "entry": "backend.py"
+    },
+    "onUpdate": {
+      "entry": "backend.py"
+    },
+    "onStart": true,
+    "onStop": true,
+    "onUninstall": {
+      "entry": "backend.py"
+    },
+    "onCrashCleanup": {
+      "entry": "backend.py"
+    },
+    "timeoutSeconds": 15
+  },
+  "ui": {
+    "quickPage": "page.js"
+  },
+  "files": {}
+}
