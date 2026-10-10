@@ -42,18 +42,21 @@
 
 在 Framely 的插件页里找到「Frame 风扇面板」→ 安装 → 打开插件页 → 点「安装并启用」。
 
-也可以手动装：
+也可以直接装离线包：
 
 ```bash
-framely plugin install dhies23.frame-fan-panel <版本>
+sudo framely install dhies23.frame-fan-panel-1.0.0-preview.1.framely --approve --approve-run-as
 ```
 
 ### 兼容性
 
 * 需要 Steam Frame（Deckard）开发机，风扇 hwmon 名为 `slg4ax46073v`。
   不是这台机器时插件只读、不改任何东西，页面会直接说明原因。
-* 需要 Framely `>= 0.6.0`。
+* 实机验证于 Framely `0.7.0-preview.2`。
 * 只用 Python 3 标准库，不联网，不装额外依赖。
+
+因为后端要 root 权限，Framely 在安装时会要求确认它以 root 运行
+（命令行是 `--approve-run-as`）。
 
 ### 和独立安装包共存
 
