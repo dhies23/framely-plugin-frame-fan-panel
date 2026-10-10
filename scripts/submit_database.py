@@ -12,7 +12,9 @@ DEFAULT_DATABASE = 'SteamFramelyHomebrew/framely-plugin-database'
 
 
 def run(*args, cwd=None):
-    return subprocess.check_output(args, cwd=cwd, text=True).strip()
+    # Pin the encoding: git output contains the manifest, whose strings are not
+    # ASCII, and the Windows locale codec (GBK here) cannot decode UTF-8.
+    return subprocess.check_output(args, cwd=cwd, encoding='utf-8').strip()
 
 
 def channel(version):
@@ -103,6 +105,7 @@ if __name__ == '__main__':
     parser.add_argument('--branch', default=None, help='defaults to the channel of the released version')
     parser.add_argument('--remote', default='origin')
     arguments = parser.parse_args()
-    manifest = json.loads((pathlib.Path(__file__).resolve().parents[1] / 'manifest.json').read_text())
+    manifest = json.loads((pathlib.Path(__file__).resolve().parents[1]
+                           / 'manifest.json').read_text(encoding='utf-8'))
     submit(arguments.tag, arguments.database,
            arguments.branch or channel(manifest['version']), arguments.remote)
