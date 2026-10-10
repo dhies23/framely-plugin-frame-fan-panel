@@ -56,6 +56,14 @@ icon = (ROOT / 'icon.png').read_bytes()
 check(icon.startswith(b'\x89PNG\r\n\x1a\n') and icon[12:16] == b'IHDR', 'icon is a PNG')
 check(24 <= len(icon) <= 1024 * 1024, 'icon size within 24 B .. 1 MiB')
 
+print('vendored panel')
+vendor = ROOT / 'vendor/fan-panel'
+vendor_meta = json.loads((vendor / 'VENDOR.json').read_text(encoding='utf-8'))
+for name, digest in vendor_meta['files'].items():
+    check(hashlib.sha256((vendor / name).read_bytes()).hexdigest() == digest, 'vendored hash: ' + name)
+check(not (ROOT / 'vendor/fan-panel/.git').exists(), 'the vendored panel carries no nested checkout')
+check((ROOT / 'scripts/sync-panel.mjs').is_file(), 'the panel can be re-synced with scripts/sync-panel.mjs')
+
 print('payload')
 built = (ROOT / 'payload').is_dir()
 if not built:
@@ -75,6 +83,10 @@ else:
     backend = (ROOT / 'payload/backend.py').read_text(encoding='utf-8')
     check('deckard-fan-control.service' in backend, 'the backend knows the stock controller')
     check('sf-fan-qamd.service' in backend, 'the backend knows its own service')
+    # build.mjs must be able to run from a clean clone: no sibling checkout.
+    build_script = (ROOT / 'scripts/build.mjs').read_text(encoding='utf-8')
+    check("'vendor', 'fan-panel'" in build_script, 'the build reads the vendored copy by default')
+    check('debjoyframe1' not in build_script, 'the build has no path outside the repository')
 
 print('package')
 package = ROOT / 'dist' / f"{manifest['id']}-{manifest['version']}.framely"

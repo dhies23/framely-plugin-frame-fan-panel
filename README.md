@@ -78,9 +78,18 @@ python3 scripts/icon.py
 python3 scripts/pack.py  # 生成 dist/*.framely 与 dist/SHA256SUMS
 ```
 
-`scripts/build.mjs` 默认从 `../debjoyframe1/sf-fan-qam` 取风扇面板的文件，
-可以用 `FAN_PANEL_SOURCE=/path/to/sf-fan-qam npm run build` 指定别的位置。
-**风扇逻辑只有一份**，插件的 payload 是它的副本。
+风扇面板本身只有一份源码（在 `dhies23/steam-frame-fan-panel` 里）。这个仓库把它的
+发布文件**原样快照**在 `vendor/fan-panel/`，所以打 release 时不依赖任何外部目录，
+CI 也不需要额外 checkout。改完风扇面板后同步一次：
+
+```bash
+node scripts/sync-panel.mjs
+# 或者：FAN_PANEL_SOURCE=/path/to/sf-fan-qam node scripts/sync-panel.mjs
+```
+
+它会重写 `vendor/fan-panel/VENDOR.json`（记录版本与每个文件的 SHA256），
+`tests/test_manifest.py` 会校验快照没有被改动。
+临时想直接从工作副本构建，也可以用 `FAN_PANEL_SOURCE=/path/to/sf-fan-qam npm run build`。
 
 推一个 `v<manifest.version>` 的 tag 就会触发
 [`.github/workflows/release.yml`](.github/workflows/release.yml)，在 `ubuntu-24.04-arm`

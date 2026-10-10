@@ -14,9 +14,12 @@ import path from 'node:path';
 
 const root = path.resolve(import.meta.dirname, '..');
 const payload = path.join(root, 'payload');
+// The panel files live in vendor/fan-panel, refreshed by scripts/sync-panel.mjs
+// from the standalone project. Set FAN_PANEL_SOURCE to build straight from a
+// working checkout instead.
 const panelSource = process.env.FAN_PANEL_SOURCE
   ? path.resolve(process.env.FAN_PANEL_SOURCE)
-  : path.resolve(root, '..', 'debjoyframe1', 'sf-fan-qam');
+  : path.join(root, 'vendor', 'fan-panel');
 
 async function copy(source, target, mode) {
   await copyFile(source, path.join(payload, target));

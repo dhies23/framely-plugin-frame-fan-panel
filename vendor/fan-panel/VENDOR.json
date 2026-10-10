@@ -1,0 +1,12 @@
+{
+  "repository": "https://github.com/dhies23/steam-frame-fan-panel",
+  "source": "sf-fan-qam",
+  "version": "1.0.0",
+  "files": {
+    "device/sf_fan_qamd.py": "7a715b57e9b285002bf8cf3a1b812617998c41bb219692c49b91085bc1eb382c",
+    "device/sf_fan_qam.js": "5ce2ac5ceb2133be0f2cf83ba0eb0a1161123ec2e7d77372fefec0a15e0cf817",
+    "device/sf-fan-qamd.service": "c360ea5f1990ee431805ecc1ee6a7f240c353fa56e26d1e2237a542d22cbf100",
+    "README.md": "8186e10e5af168b05c0b6d21054d2413ac1c344fa5c6c2e60158b8427f6fc366",
+    "VERSION": "59854984853104df5c353e2f681a15fc7924742f9a2e468c29af248dce45ce03"
+  }
+}
